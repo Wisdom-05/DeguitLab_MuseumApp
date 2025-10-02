@@ -7,11 +7,13 @@ import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -47,6 +49,12 @@ class TicketingActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Ticketing() {
+    var generalAdmissionCount by remember { mutableIntStateOf(1) }
+    var freeTicketCount by remember { mutableIntStateOf(1) }
+
+    val pricePerTicket = 500
+    val totalPrice = generalAdmissionCount * pricePerTicket
+
     val datePickerState = rememberDatePickerState(
         initialSelectedDateMillis = Instant.now()
             .plus(Duration.ofDays(2)).toEpochMilli(),
@@ -132,6 +140,42 @@ fun Ticketing() {
                         disabledDayContentColor = Color.Gray
                     )
                 )
+
+                Spacer(modifier = Modifier.height(30.dp))
+
+                // Number of Tickets Section
+                Column(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        "2. Number of Tickets",
+                        fontSize = 26.sp,
+                        fontFamily = playfairdisplayregular,
+                        color = Color(0xFFD29F1B),
+                        modifier = Modifier.padding(bottom = 20.dp)
+                    )
+
+                    // General Admission Ticket
+                    TicketCounter(
+                        title = "General Admission",
+                        price = "P$pricePerTicket",
+                        count = generalAdmissionCount,
+                        onIncrement = { generalAdmissionCount++ },
+                        onDecrement = { if (generalAdmissionCount > 0) generalAdmissionCount-- }
+                    )
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    // Free Ticket
+                    TicketCounter(
+                        title = "Under 18s, Under 26s\nresidents of the EEA,\nMuseum members,\nProfessionals",
+                        price = "FREE",
+                        count = freeTicketCount,
+                        onIncrement = { freeTicketCount++ },
+                        onDecrement = { if (freeTicketCount > 0) freeTicketCount-- },
+                        isFree = true
+                    )
+                }
             }
         }
 
@@ -146,7 +190,7 @@ fun Ticketing() {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                "Total: P500",
+                "Total: P$totalPrice",
                 fontSize = 26.sp,
                 fontFamily = playfairdisplayregular,
                 color = Color.Black,
@@ -163,6 +207,82 @@ fun Ticketing() {
                     fontFamily = playfairdisplayregular,
                     color = Color(0xFFD29F1B),
                     fontWeight = FontWeight.Normal
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun TicketCounter(
+    title: String,
+    price: String,
+    count: Int,
+    onIncrement: () -> Unit,
+    onDecrement: () -> Unit,
+    isFree: Boolean = false
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(
+            modifier = Modifier.weight(1f)
+        ) {
+            Text(
+                title,
+                fontSize = 18.sp,
+                color = Color.White,
+                lineHeight = 22.sp
+            )
+            Text(
+                price,
+                fontSize = 20.sp,
+                fontFamily = playfairdisplayregular,
+                color = if (isFree) Color(0xFFD29F1B) else Color(0xFFD29F1B),
+                fontWeight = FontWeight.Normal
+            )
+        }
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(15.dp)
+        ) {
+            // Decrement button
+            IconButton(
+                onClick = onDecrement,
+                modifier = Modifier
+                    .size(50.dp)
+                    .border(1.dp, Color(0xFFD29F1B), CircleShape)
+            ) {
+                Text(
+                    "−",
+                    fontSize = 24.sp,
+                    color = Color(0xFFD29F1B)
+                )
+            }
+
+            // Count
+            Text(
+                count.toString(),
+                fontSize = 24.sp,
+                color = Color.White,
+                modifier = Modifier.widthIn(min = 30.dp),
+                textAlign = TextAlign.Center
+            )
+
+            // Increment button
+            IconButton(
+                onClick = onIncrement,
+                modifier = Modifier
+                    .size(50.dp)
+                    .border(1.dp, Color(0xFFD29F1B), CircleShape)
+            ) {
+                Text(
+                    "+",
+                    fontSize = 24.sp,
+                    color = Color(0xFFD29F1B)
                 )
             }
         }
