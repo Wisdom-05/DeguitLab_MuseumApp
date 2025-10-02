@@ -50,7 +50,7 @@ class TicketingActivity : ComponentActivity() {
 @Composable
 fun Ticketing() {
     var generalAdmissionCount by remember { mutableIntStateOf(1) }
-    var freeTicketCount by remember { mutableIntStateOf(1) }
+    var freeTicketCount by remember { mutableIntStateOf(0) }
 
     val pricePerTicket = 500
     val totalPrice = generalAdmissionCount * pricePerTicket
