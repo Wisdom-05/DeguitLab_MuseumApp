@@ -30,6 +30,12 @@
         <!-- Ticketing screen -->
         <activity android:name=".TicketingActivity" />
 
+        <!-- Artists screen -->
+        <activity android:name=".ArtistsActivity" />
+
+        <!-- Exhibit screen -->
+        <activity android:name=".ExhibitActivity" />
+
     </application>
 
 </manifest>
